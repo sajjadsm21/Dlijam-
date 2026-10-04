@@ -2,10 +2,12 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
 
-  <title>Dlijam</title>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0,
+        maximum-scale=1.0, user-scalable=no">
+
+  <title>Dli World</title>
 
   <style>
     html, body {
@@ -14,24 +16,83 @@
       height: 100%;
       overflow: hidden;
       background: #050505;
+      touch-action: none;
     }
 
     canvas {
       display: block;
+    }
+
+    /* Phone rotate message */
+    #rotateMessage {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+
+      background: #050505;
+      color: white;
+
+      font-family: Arial, sans-serif;
+
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+
+      text-align: center;
+    }
+
+    #rotateMessage .icon {
+      font-size: 55px;
+      margin-bottom: 15px;
+    }
+
+    #rotateMessage h2 {
+      margin: 0 0 8px;
+    }
+
+    #rotateMessage p {
+      margin: 0;
+      opacity: 0.7;
     }
   </style>
 </head>
 
 <body>
 
+<!-- ROTATE SCREEN -->
+
+<div id="rotateMessage">
+
+  <div class="icon">📱↻</div>
+
+  <h2>Rotate Your Phone</h2>
+
+  <p>
+    Turn your phone sideways to play Dli World.
+  </p>
+
+</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.min.js"></script>
 
 <script>
+
+
+// ==============================
+// SCENE
+// ==============================
 
 const scene = new THREE.Scene();
 
 scene.background =
   new THREE.Color(0x101522);
+
+
+// ==============================
+// CAMERA
+// ==============================
 
 const camera =
   new THREE.PerspectiveCamera(
@@ -41,7 +102,16 @@ const camera =
     1000
   );
 
-camera.position.set(0, 5, 10);
+camera.position.set(
+  0,
+  5,
+  10
+);
+
+
+// ==============================
+// RENDERER
+// ==============================
 
 const renderer =
   new THREE.WebGLRenderer({
@@ -62,7 +132,9 @@ document.body.appendChild(
 );
 
 
+// ==============================
 // LIGHT
+// ==============================
 
 const sunlight =
   new THREE.DirectionalLight(
@@ -79,7 +151,9 @@ sunlight.position.set(
 scene.add(sunlight);
 
 
+// ==============================
 // GROUND
+// ==============================
 
 const ground =
   new THREE.Mesh(
@@ -101,7 +175,9 @@ ground.position.y = -0.25;
 scene.add(ground);
 
 
+// ==============================
 // PLAYER
+// ==============================
 
 const player =
   new THREE.Mesh(
@@ -123,43 +199,13 @@ player.position.y = 1;
 scene.add(player);
 
 
-// GAME LOOP
+// ==============================
+// CHARACTER ANIMATION
+// ==============================
 
-function gameLoop() {
+let walking = false;
 
-  requestAnimationFrame(
-    gameLoop
-  );
-
-  renderer.render(
-    scene,
-    camera
-  );
-}
-
-gameLoop();
+let animationTime = 0;
 
 
-// RESIZE
-
-window.addEventListener(
-  "resize",
-  () => {
-
-    camera.aspect =
-      innerWidth / innerHeight;
-
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(
-      innerWidth,
-      innerHeight
-    );
-
-  }
-);
-
-</script>
-
-</body>
-</html>
+function animateCharacter(delta)
